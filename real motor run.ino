@@ -29,7 +29,7 @@ void loop() {
   //motor1.step(1, FORWARD, INTERLEAVE); 
   //motor2.step(1, BACKWARD, INTERLEAVE); 
 
-  //Micrsostep steps
+  //Microstep steps
   //motor1.step(1, FORWARD, MICROSTEP); 
   //motor2.step(1, BACKWARD, MICROSTEP); 
 }

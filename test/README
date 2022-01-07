@@ -1,0 +1,19 @@
+
+This directory is intended for PlatformIO Unit Testing and project tests.
+
+Unit Testing is a software testing method by which individual units of
+source code, sets of one or more MCU program modules together with associated
+control data, usage procedures, and operating procedures, are tested to
+determine whether they are fit for use. Unit testing finds problems early
+in the development cycle.
+
+More information about PlatformIO Unit Testing:
+- https://docs.platformio.org/page/plus/unit-testing.html
+
+//_________________________________________________________
+Error Codes, from int return functions
+0 ~ No problems
+1 ~ Set up function problem range [10-19]
+10 ~ Stepper motor side invalid
+2 ~ Drive function problem [20-29]
+

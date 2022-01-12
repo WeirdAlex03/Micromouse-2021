@@ -7,7 +7,7 @@
 #######################################
 
 AF_DCMotor	KEYWORD1
-AF_Stepper	KEYWORD1
+	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)

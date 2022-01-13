@@ -15,11 +15,16 @@ class Drive
     int forward(int dis);
     int turnLeft();
     int turnRight();
+    int turnAround();
+    int setSpeed(int speed);
   private:
     int _x;
     int _y;
     int _ori;
     int _radius;
     int _theta;
+    //Object&& o2 = Object();
+    AF_Stepper&& _right;
+    AF_Stepper&& _left;
 };
 #endif

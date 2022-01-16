@@ -1,0 +1,6 @@
+Error Codes explained using morse Codes
+
+
+_______________Initalization Codes _________________
+0 - Valid Operation
+

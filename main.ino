@@ -1,11 +1,8 @@
 #include <AFMotor.h>
 #include <SharpIR.h>
 
-// Constants for orientation
-#define NORTH 0
-#define EAST  1
-#define SOUTH 2
-#define WEST  3
+// Constants for orientation. N=0, E=1, S=2, W=3
+enum directions { NORTH, EAST, SOUTH, WEST };
 
 // global variables, altepper motors and sensors are defined here
 const int stepsPerRevolution = 60;

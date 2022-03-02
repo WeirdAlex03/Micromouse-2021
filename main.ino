@@ -14,7 +14,7 @@ enum directions { NORTH, EAST, SOUTH, WEST };
 //Path remembering datastructure
 std::Map<*int,
 
-// global variables, altepper motors and sensors are defined here
+// global variables, all stepper motors and sensors are defined here
 const int stepsPerRevolution = 60;
 AF_Stepper rMotor(stepsPerRevolution, 2);
 AF_Stepper lMotor(stepsPerRevolution, 1);
@@ -45,22 +45,22 @@ uint8_t maze[16][16];
 
 //set speed of motor and Initialize all nodes in the maze
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(9600);   // Should be "Serial1", "Serial2", or something like that. Same on line 386
   rMotor.setSpeed(160);
   lMotor.setSpeed(160);   
   for(x = 0; x < 16; ++x){
     for(y = 0; y < 16; ++y){
-      maze [x][y] = 15 //1111
+      maze [x][y] = 0b1111;
     }
   } //Determines the walls around starting corner
   if(F > 5 && R > 5){
-    maze[0][0] = 3; //0011
+    maze[0][0] = 0b0011;
   }
   if(F>5 && R<5){
-    maze[0][0] = 7; //0111
+    maze[0][0] = 0b0111;
   }
   if(F<5 && R>5){
-    maze[0][0] = 11; //1011
+    maze[0][0] = 0b1011;
   }
   x = 0;//sets 
   y = 0;
@@ -95,7 +95,7 @@ void forward(){
    */
   double distancePerCoordinate = 10; // This is a placeholder number, will need to change when we get measurements, it's in cm
   double wheelDiameter = 2.5 * 2.54; // convert's wheel diameter from inches to cm
-  double wheelCircumference = M_PI * (wheelDiameter / 2) * (wheelDiameter / 2);
+  double wheelCircumference = PI * (wheelDiameter / 2) * (wheelDiameter / 2);
   double travelDistance = distancePerCoordinate / wheelCircumference;
   double turnCounts = 60 * travelDistance;
 
@@ -146,7 +146,7 @@ void straightCheck(){// also check if these values are good, not sure if 3 is go
         rMotor.step(1, FORWARD, SINGLE); 
         lMotor.step(1, BACKWARD, SINGLE);
       }
-      return; //prevent accidently turning the wrong direction
+      return; //prevent accidentally turning the wrong direction
     }
     else if(LU < RL){
       while(LU < RL){
@@ -158,7 +158,7 @@ void straightCheck(){// also check if these values are good, not sure if 3 is go
     }
 }
 
-void fillNode(){ //NEED TO CHANGE VALUES FOR IN THE IF STATMENT IT WAS A GUESS ------------------------------------------------------------------------------------------
+void fillNode(){ //NEED TO CHANGE VALUES FOR IN THE IF STATEMENT IT WAS A GUESS ------------------------------------------------------------------------------------------
   maze[x][y] = 0;
 
   switch(ori){
@@ -254,7 +254,7 @@ uint8_t bestFit(){// 0=forward, 1=right, 2=backward, 3=left
       }
       break;
     case 1:
-      bCalc = (7.5 - x)/(7.5 - Math.abs(y));
+      bCalc = (7.5 - x)/(7.5 - abs(y));
       rCalc = (7.5 - abs(y))/(7.5 - x);
       if(bCalc < rCalc){
         return 2;
@@ -308,7 +308,7 @@ void mazeDecision(uint8_t curWallNum, uint8_t lastWallNum){
         break;
       default:
         // Intersection, call decision making function to determine which way to go
-        bestFit();// to do decide between 2 openings need best fit in conjuction with avaliable openingsi
+        bestFit();// to do decide between 2 openings need best fit in conjuction with avaliable openings
         break;
     }
   } else {
@@ -365,15 +365,15 @@ void turnTowardsOpening(uint8_t wallNum) {
  */
 uint8_t getOpeningsFromWallNumber(uint8_t wallNum) {
   // TODO
-  uint8_t numopenings = 0;
+  uint8_t numOpenings = 0;
   
   for(uint8_t bit = 0; bit < 4; bit++){
     if(bitRead(wallNum, bit)==0){
-      numopenings++;  
+      numOpenings++;  
     }
   }
 
-  return numopenings; 
+  return numOpenings; 
 }
 
 void loop() {
@@ -383,5 +383,5 @@ void loop() {
   FL =  sensorFL.getDistance();
   L  =  sensorL.getDistance();
 
-  Serial.print('R');
+  Serial.print('R'); // See line 43
 }

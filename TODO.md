@@ -9,20 +9,21 @@
 - Straight function
   - Function to have Jerry go straight
 - overall decision making function
-
-## DOING
-
 - Maze Initialization - Change from 16x16x6 to 16x16
   - x/y/N/E/S/W -> x/y/walls
   - walls is decimal equivlant of binary status of wall status
     - ie `walls = 5` means `0101` means walls to S/W
     - `walls = 15` (`1111`) signifies unexplored
-- Turning Function
-  - Functions for spinning jerry
 - Fill Node Fucnction
   - Fills the current grid space to figure out the walls around it
+
+## DOING
+
+- Turning Function
+  - Functions for spinning jerry
 - NEW CHASIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  - Jerry needs be able to pivot in his center
 
 ## NOT STARTED
 
@@ -34,6 +35,7 @@
 - Give Jerry a pin :)
 - Making sure jerry goes forward. This realistically has been started, but it is not good rn tbh
 - Some function to make sure we have the maze solved
-- give googly eyes
+- give googly eyes and mouse ears
 - split functions into separate files
   - figure out libraries or whatever goes into that
+- Wheels

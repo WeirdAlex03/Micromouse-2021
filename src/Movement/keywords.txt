@@ -1,0 +1,7 @@
+Movement	KEYWORD1
+
+moveForward	KEYWORD2
+turnLeft	KEYWORD2
+turnRight	KEYWORD2
+turnAround	KEYWORD2
+setMotorSpeeds	KEYWORD2

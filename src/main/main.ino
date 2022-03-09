@@ -3,21 +3,20 @@
 #include <math.h>
 #include <inttypes.h>
 
+#include "Movement\Movement.h"
+
 // To fix this import issue, look up the library and import it into the project file
 // -- i was too lazy to do that, commenting was easier in the moment
 // Copy paste time
 
 
-// Constants for orientation. N=0, E=1, S=2, W=3
-enum directions { NORTH, EAST, SOUTH, WEST };
 
 //Path remembering datastructure
-std::Map<*int,
+
 
 // global variables, all stepper motors and sensors are defined here
-const int stepsPerRevolution = 60;
-AF_Stepper rMotor(stepsPerRevolution, 2);
-AF_Stepper lMotor(stepsPerRevolution, 1);
+Movement move(60, 1, 2);
+
 SharpIR sensorR( SharpIR::GP2Y0A41SK0F, A5 );
 SharpIR sensorFR( SharpIR::GP2Y0A41SK0F, A4 );
 SharpIR sensorF( SharpIR::GP2Y0A41SK0F, A3 );
@@ -29,9 +28,6 @@ uint8_t FR = 0;    // Value of the front right sensor
 uint8_t F  = 0;    // Value of the front sensor
 uint8_t FL = 0;    // Value of the front left sensor
 uint8_t L  = 0;    // Value of the left sensor
-uint8_t x = 0;     // X position of the robot
-uint8_t y = 0;     // Y position of the robot
-uint8_t ori = 0;   // Orientation of the robot
 
 /* each node is an 8 bit int, representing the state of the walls.
  * 
@@ -46,10 +42,9 @@ uint8_t maze[16][16];
 //set speed of motor and Initialize all nodes in the maze
 void setup() {
   Serial.begin(9600);   // Should be "Serial1", "Serial2", or something like that. Same on line 386
-  rMotor.setSpeed(160);
-  lMotor.setSpeed(160);   
-  for(x = 0; x < 16; ++x){
-    for(y = 0; y < 16; ++y){
+  move.setMotorSpeeds(160);
+  for(int x = 0; x < 16; ++x){
+    for(int y = 0; y < 16; ++y){
       maze [x][y] = 0b1111;
     }
   } //Determines the walls around starting corner
@@ -62,76 +57,8 @@ void setup() {
   if(F<5 && R>5){
     maze[0][0] = 0b1011;
   }
-  x = 0;//sets 
-  y = 0;
 }
 
-// basic turning/going functions **NEED TO ADJUST THE FOR LOOPS IN EACH TURN GO FUNCTION< AND ADD FOR LOOP IN FORWARD**
-void turnAround(){
-  for(uint8_t i = 0; i < 170; ++i){
-      rMotor.step(1, BACKWARD, SINGLE); 
-      lMotor.step(1, FORWARD, SINGLE);
-    } 
-  switch(ori){
-    // this could just be:  ori = (ori + 2) % 4  - Alex
-    // fuck off alex
-    case NORTH: 
-      ori = SOUTH;
-      break;
-    case EAST:
-      ori = WEST;
-      break;
-    case SOUTH:
-      ori = NORTH;
-      break;
-    case WEST:
-      ori = EAST;
-      break;
-  }
-}
-void forward(){
-  /*
-   *  This group of doubles does math to determine how many counts we need so we can travel one exactly coordinate
-   */
-  double distancePerCoordinate = 10; // This is a placeholder number, will need to change when we get measurements, it's in cm
-  double wheelDiameter = 2.5 * 2.54; // convert's wheel diameter from inches to cm
-  double wheelCircumference = PI * (wheelDiameter / 2) * (wheelDiameter / 2);
-  double travelDistance = distancePerCoordinate / wheelCircumference;
-  double turnCounts = 60 * travelDistance;
-
-  for(uint8_t i = 0; i < (int)turnCounts; ++i){
-    rMotor.step(1, FORWARD, SINGLE);
-    lMotor.step(1, FORWARD, SINGLE);
-  }
-    switch(ori){
-      case NORTH:
-        y = y+1;
-        break;
-      case EAST:
-        x = x+1;
-        break;
-      case SOUTH:
-        y = y-1;
-        break;
-      case WEST:
-        x = x-1;
-        break;
-    }
-}
-void rightTurn(){
-    for(uint8_t i = 0; i < 86; ++i){
-      lMotor.step(1, FORWARD, SINGLE); 
-      rMotor.step(1, BACKWARD, SINGLE);
-    }
-    ori = (ori+1) % 4;
-}
-void leftTurn(){
-    for(uint8_t i = 0; i < 86; ++i){
-      rMotor.step(1, FORWARD, SINGLE); 
-      lMotor.step(1, BACKWARD, SINGLE); 
-    }
-    ori = (ori-1) % 4;
-}
 
 void straightCheck(){// also check if these values are good, not sure if 3 is good enough wiggle room -> potentially not working because range is 10 to 80 cm. left in just in case
   int RU = sensorR.getDistance() + 1;
@@ -300,7 +227,7 @@ void mazeDecision(uint8_t curWallNum, uint8_t lastWallNum){
     switch (openings) {
       case 1:
         // Dead end, turn around
-        turnAround();
+        move.turnAround();
         break;
       case 2:
         // Only one way to go, figure out which way that is
@@ -313,7 +240,7 @@ void mazeDecision(uint8_t curWallNum, uint8_t lastWallNum){
     }
   } else {
     // No wall change, continue straight
-    forward();
+    move.moveForward();
   }
 }
 
@@ -329,23 +256,23 @@ void mazeDecision(uint8_t curWallNum, uint8_t lastWallNum){
  */
 void turnTowardsOpening(uint8_t wallNum) {
   for (uint8_t i = 0; i < 4; i++) {
-    if (i == (ori + 2) % 4) {
+    if (i == (move.ori + 2) % 4) {
       // Skip the direction we just came from
       continue;
     }
     if (bitRead(wallNum, i) == 0) {
       // Found the direction to go, figure out which way to turn
-      if (i == (ori - 1) % 4) {
+      if (i == (move.ori - 1) % 4) {
         // Turn left
-        leftTurn();
-        forward();
-      } else if (i == (ori + 1) % 4) {
+        move.turnLeft();
+        move.moveForward();
+      } else if (i == (move.ori + 1) % 4) {
         // Turn right
-        rightTurn();
-        forward();
-      } else if (i == ori) {
+        move.turnRight();
+        move.moveForward();
+      } else if (i == move.ori) {
         // Don't have to turn; continue straight
-        forward();
+        move.moveForward();
       } else {
         // Should never happen
       }

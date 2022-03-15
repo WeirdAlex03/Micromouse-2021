@@ -15,7 +15,12 @@
 
 
 // global variables, all stepper motors and sensors are defined here
-Movement move(60, 1, 2);
+
+// Initialize motors (has to be done here because Arduino reasons)
+uint16_t stepsPerRev = 60;
+AF_Stepper lMotor(stepsPerRev, 1);
+AF_Stepper rMotor(stepsPerRev, 2);
+Movement move(lMotor, rMotor);
 
 SharpIR sensorR( SharpIR::GP2Y0A41SK0F, A5 );
 SharpIR sensorFR( SharpIR::GP2Y0A41SK0F, A4 );
@@ -41,6 +46,12 @@ uint8_t maze[16][16];
 
 //set speed of motor and Initialize all nodes in the maze
 void setup() {
+  
+
+
+
+
+
   Serial.begin(9600);   // Should be "Serial1", "Serial2", or something like that. Same on line 386
   move.setMotorSpeeds(160);
   for(int x = 0; x < 16; ++x){

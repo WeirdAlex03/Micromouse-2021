@@ -1,15 +1,16 @@
 
 #include <Arduino.h>
-#include <AFMotor.h>
+//#include <AFMotor->h>
 #include <inttypes.h>
 
 #include "Movement.h"
 
-Movement::Movement(uint16_t stepsPerRev, uint8_t lMotorNum, uint8_t rMotorNum) {
-  AF_Stepper rMotor(stepsPerRev, rMotorNum);
-  AF_Stepper lMotor(stepsPerRev, lMotorNum);
-  _rMotor = rMotor;
-  _lMotor = lMotor;
+Movement::Movement(AF_Stepper *lMotor, AF_Stepper *rMotor) {
+ _lMotor = lMotor;
+ _rMotor = rMotor;
+  
+ _rMotor->setSpeed(_motorSpeed);
+ _lMotor->setSpeed(_motorSpeed);
 }
 
 void Movement::moveForward() {
@@ -23,50 +24,46 @@ void Movement::moveForward() {
   double turnCounts = 60 * travelDistance;
 
   for(uint8_t i = 0; i < (int)turnCounts; ++i){
-    _rMotor.step(1, FORWARD, SINGLE);
-    _lMotor.step(1, FORWARD, SINGLE);
+    _rMotor->step(1, FORWARD, SINGLE);
+    _lMotor->step(1, FORWARD, SINGLE);
   }
-    switch(ori){
-      case NORTH:
-        y = y+1;
-        break;
-      case EAST:
-        x = x+1;
-        break;
-      case SOUTH:
-        y = y-1;
-        break;
-      case WEST:
-        x = x-1;
-        break;
-    }
-}
-
-void Movement::setMotorSpeeds(uint8_t speed) {
-  _lMotor.setSpeed(speed);
-  _rMotor.setSpeed(speed);
+  
+  switch(ori){
+    case NORTH:
+      y = y+1;
+      break;
+    case EAST:
+      x = x+1;
+      break;
+    case SOUTH:
+      y = y-1;
+      break;
+    case WEST:
+      x = x-1;
+      break;
+  }
 }
 
 void Movement::turnRight() {
     for(uint8_t i = 0; i < 86; ++i){
-      _lMotor.step(1, FORWARD, SINGLE); 
-      _rMotor.step(1, BACKWARD, SINGLE);
+      _lMotor->step(1, FORWARD, SINGLE); 
+      _rMotor->step(1, BACKWARD, SINGLE);
     }
     ori = (ori+1) % 4;
 }
 
 void Movement::turnLeft() {
     for(uint8_t i = 0; i < 86; ++i){
-      _rMotor.step(1, FORWARD, SINGLE); 
-      _lMotor.step(1, BACKWARD, SINGLE); 
+      _rMotor->step(1, FORWARD, SINGLE); 
+      _lMotor->step(1, BACKWARD, SINGLE); 
     }
     ori = (ori-1) % 4;
 }
 
 void Movement::turnAround() {
   for(uint8_t i = 0; i < 170; ++i){
-      _rMotor.step(1, BACKWARD, SINGLE); 
-      _lMotor.step(1, FORWARD, SINGLE);
+      _rMotor->step(1, BACKWARD, SINGLE); 
+      _lMotor->step(1, FORWARD, SINGLE);
     } 
   switch(ori){
     // this could just be:  ori = (ori + 2) % 4  - Alex

@@ -4,4 +4,6 @@ moveForward	KEYWORD2
 turnLeft	KEYWORD2
 turnRight	KEYWORD2
 turnAround	KEYWORD2
-setMotorSpeeds	KEYWORD2
+
+x	LITERAL1
+y	LITERAL1

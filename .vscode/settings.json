@@ -1,3 +1,11 @@
 {
-	"cSpell.words": ["Micromouse"]
+	"cSpell.words": [
+		"Micromouse",
+		"NESW"
+	],
+	"files.associations": {
+		"*.gs": "javascript",
+		"*.js": "javascript",
+		"type_traits": "cpp"
+	}
 }

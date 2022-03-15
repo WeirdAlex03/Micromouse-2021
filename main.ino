@@ -132,9 +132,28 @@ void leftTurn(){
     }
     ori = (ori-1) % 4;
 }
-
+uint8_t pf= 0;//intialize previous difference between FL and FR 
 void straightCheck(){// also check if these values are good, not sure if 3 is good enough wiggle room -> potentially not working because range is 10 to 80 cm. left in just in case
-  int RU = sensorR.getDistance() + 1;
+  
+  uint8_t cf = FL-FR;// current difference between FL and FR
+  uint8_t maxside;// need value of max diff ffrom sensor over this meeans there is an opening
+  uint8_t tv ;// a threshold we define as acceptable for straightness
+  if(cf>maxside){
+    continue;
+  }else if(abs(cf-pf)<tv){
+    rMotor.setSpeed(160);
+    lMotor.setSpeed(160); 
+
+  }else if(){
+    lMotor.setSpeed(150); 
+  }else{
+    rMotor.setSpeed(150); 
+  }
+  pf=cf;
+
+
+  
+  /*int RU = sensorR.getDistance() + 1;
   int RL = sensorR.getDistance() - 1;
   int LU = sensorL.getDistance() + 1;
   int LL = sensorL.getDistance() - 1;
@@ -155,7 +174,7 @@ void straightCheck(){// also check if these values are good, not sure if 3 is go
          lMotor.step(1, FORWARD, SINGLE);
          rMotor.step(1, BACKWARD, SINGLE);
       }
-    }
+    }*/
 }
 
 void fillNode(){ //NEED TO CHANGE VALUES FOR IN THE IF STATEMENT IT WAS A GUESS ------------------------------------------------------------------------------------------
